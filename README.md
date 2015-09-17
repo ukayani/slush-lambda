@@ -1,5 +1,5 @@
 # slush-lambda
-
+[![Build Status](https://travis-ci.org/LoyaltyOne/slush-lambda.svg)](https://travis-ci.org/LoyaltyOne/slush-lambda)
 > Generates a aws-lambda node project
 
 
