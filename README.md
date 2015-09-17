@@ -38,13 +38,11 @@ To find out more about Slush, check out the [documentation](https://github.com/s
 See the [CONTRIBUTING Guidelines](https://github.com/ukayani/slush-lambda/blob/master/CONTRIBUTING.md)
 
 ## Support
-If you have any problem or suggestion please open an issue [here](https://github.com/ukayani/slush-lambda/issues).
+If you have any problem or suggestion please open an issue [here](https://github.com/LoyaltyOne/slush-lambda/issues).
 
 ## License 
 
 The MIT License
-
-Copyright (c) 2015, Umair Kayani
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
