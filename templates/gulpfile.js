@@ -10,7 +10,7 @@ var nsp = require('gulp-nsp');
 var zip    = require('gulp-zip');
 var gutil = require('gulp-util');
 
-var sourceFiles = ['app.js', 'operations/**/*.js'];
+var sourceFiles = ['app.js', 'operations/**/*.js', 'lib/**/*.js'];
 
 
 function getIncludes() {
@@ -74,6 +74,7 @@ gulp.task('nsp', function (done) {
   nsp('./package.json', done);
 });
 
+// Package up your application
 gulp.task('package', function() {
   return gulp.src(getIncludes(), {base: './'})
     .pipe(zip('service.zip'))
