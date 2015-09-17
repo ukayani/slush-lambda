@@ -23,7 +23,8 @@
     "npm": ">=1.4.3"
   },
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "aws-lambda-bootstrap": "^0.1.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

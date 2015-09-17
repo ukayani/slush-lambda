@@ -121,6 +121,7 @@ gulp.task('default', function (done) {
                     });
 });
 
+
 function fixHiddenFile(file) {
     if (file.basename[0] === '_') {
         file.basename = '.' + file.basename.slice(1);

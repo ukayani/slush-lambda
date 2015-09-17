@@ -7,7 +7,6 @@ var jshint = require('gulp-jshint');
 var complexity = require('gulp-complexity');
 var jscs = require('gulp-jscs-with-reporter');
 var nsp = require('gulp-nsp');
-var lambda = require('gulp-awslambda');
 var zip    = require('gulp-zip');
 var gutil = require('gulp-util');
 
@@ -78,7 +77,6 @@ gulp.task('nsp', function (done) {
 gulp.task('package', function() {
   return gulp.src(getIncludes(), {base: './'})
     .pipe(zip('service.zip'))
-    //.pipe(lambda(lambda_params, opts))
     .pipe(gulp.dest('.'));
 });
 

@@ -1,7 +1,7 @@
 {
   "name": "slush-lambda",
   "description": "Generates a aws-lambda node project",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/ukayani/slush-lambda",
   "author": {
     "name": "",
@@ -43,6 +43,11 @@
     "underscore.string": "^2.3.3"
   },
   "keywords": [
-    "slushgenerator"
+    "slushgenerator",
+    "slush",
+    "generator",
+    "scaffold",
+    "aws",
+    "lambda"
   ]
 }
