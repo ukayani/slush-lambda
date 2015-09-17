@@ -26,7 +26,7 @@
     "npm": ">=1.4.3"
   },
   "scripts": {
-    "test": "gulp test lint style complexity"
+    "test": "gulp"
   },
   "dependencies": {
     "gulp": "^3.6.2",
