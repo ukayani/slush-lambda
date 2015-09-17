@@ -22,7 +22,7 @@ $ mkdir my-slush-lambda
 Run the generator from within the new folder:
 
 ```bash
-$ cd my-slush-lambda && slush slush-lambda
+$ cd my-slush-lambda && slush lambda
 ```
 
 ## Getting To Know Slush
