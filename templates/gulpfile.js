@@ -10,6 +10,7 @@ var jscs = require('gulp-jscs-with-reporter');
 var nsp = require('gulp-nsp');
 var zip    = require('gulp-zip');
 var gutil = require('gulp-util');
+var stylish = require('jshint-stylish');
 
 var sourceFiles = ['app.js', 'operations/**/*.js', 'lib/**/*.js'];
 
@@ -58,7 +59,7 @@ gulp.task('lint', function() {
 
   return gulp.src(sourceFiles)
       .pipe(jshint(jshintConfig))
-      .pipe(jshint.reporter('default'))
+      .pipe(jshint.reporter(stylish))
       .pipe(jshint.reporter('gulp-jshint-html-reporter', {
         filename: __dirname + '/lint.html',
         createMissingFolders : false  
