@@ -1,3 +1,4 @@
+'use strict';
 // Entry point lambda for <%= appName %>
 
 var config = require('./config.json');

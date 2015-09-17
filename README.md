@@ -35,7 +35,27 @@ To find out more about Slush, check out the [documentation](https://github.com/s
 
 ## Contributing
 
-See the [CONTRIBUTING Guidelines](https://github.com/ukayani/slush-lambda/blob/master/CONTRIBUTING.md)
+### Versioning
+
+When you make a change in your feature/fix branch make sure you update the version for the package.
+```bash
+$ npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
+```
+
+Example:
+If you made a patch
+```bash
+$ npm version patch
+```
+
+The above command will automatically create a git tag for the repository
+When doing a git push, specify the tag-name to push the tag information to the repo
+
+Ex.
+```bash
+$ git push origin/branchname tagname
+```
+
 
 ## Support
 If you have any problem or suggestion please open an issue [here](https://github.com/LoyaltyOne/slush-lambda/issues).

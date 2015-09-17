@@ -1,4 +1,5 @@
-// Build script for <%= appName %>
+'use strict';
+// Tasks for <%= appName %>
 
 var gulp   = require('gulp');
 var mocha = require('gulp-mocha');
