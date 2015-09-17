@@ -25,7 +25,9 @@
     "node": ">= 0.10.26",
     "npm": ">=1.4.3"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "gulp test lint style complexity"
+  },
   "dependencies": {
     "gulp": "^3.6.2",
     "gulp-conflict": "^0.1.1",
@@ -33,6 +35,15 @@
     "gulp-rename": "^1.2.0",
     "gulp-template": "^0.1.1",
     "gulp-util": "^3.0.6",
+    "gulp-mocha": "^2.1.3",
+    "gulp-complexity": "^0.3.0",
+    "gulp-nsp": "^0.4.5",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-jscs-html-reporter": "^0.1.1",
+    "gulp-jscs-with-reporter": "^1.4.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-jshint-html-reporter": "^0.1.3",
+    "gulp-zip": "^3.0.2",
     "iniparser": "^1.0.5",
     "inquirer": "^0.8.0",
     "lodash": "^3.10.1",
