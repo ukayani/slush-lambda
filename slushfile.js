@@ -1,9 +1,9 @@
-/*
+'use strict';
+
+/**
  * slush-lambda
  * Licensed under the MIT license.
  */
-
-'use strict';
 
 var gulp = require('gulp'),
     install = require('gulp-install'),
@@ -15,32 +15,82 @@ var gulp = require('gulp'),
     path = require('path'),
     merge = require('merge-stream'),
     multi = require('./multi'),
-    lodash = require('lodash');
+    stringify = require('json-stringify'),
+    lodash = require('lodash'),
+    fs = require('fs'),
+    iniparser = require('iniparser');
 
+/**
+ * Lowercases and removes spaces on the input
+ * @param input input to format
+ */
 function format(input) {
     var output = input.toLowerCase();
     return output.replace(/\s/g, '');
 }
 
-// Set up defaults for prompts
-var defaults = (function () {
-    var workingDirName = path.basename(process.cwd()),
-        homeDir, osUserName, configFile, user;
+/**
+ * Fixes the file if it begins with _ and preprends it with . instead
+ * @file the file to be analyzed
+ */
+function fixHiddenFile(file) {
+    if (file.basename[0] === '_') {
+        file.basename = '.' + file.basename.slice(1);
+    }
+}
+
+function createOperationProcessor(operations) {
+    return function process(i, file) {
+        var op = operations[i],
+            dirname = path.dirname(file.path),
+            filename = path.basename(file.path).replace('operation', op);
+
+        file.path = path.join(dirname, filename);
+        var compiled = lodash.template(file.contents.toString());
+        file.contents = new Buffer(
+            compiled({opName: op}
+            )
+        );
+    };
+}
+
+/**
+ *  Determines home directories based on platform
+ *  This is used by the inquire plugin
+ */
+function determineDirectoriesBasedOnPlatform() {
+    var homeDir, osUserName;
 
     if (process.platform === 'win32') {
         homeDir = process.env.USERPROFILE;
         osUserName = process.env.USERNAME || path.basename(homeDir).toLowerCase();
-    }
-    else {
+    } else {
         homeDir = process.env.HOME || process.env.HOMEPATH;
         osUserName = homeDir && homeDir.split('/').pop() || 'root';
     }
 
+    return {
+        homeDir: homeDir,
+        osUserName: osUserName
+    };
+}
+
+/**
+ *  Defaults for the inquire plugin when creating a new base project
+ */
+function computeDefaults() {
+    var workingDirName = path.basename(process.cwd()),
+        homeDir, osUserName, configFile, user;
+
+    var result = determineDirectoriesBasedOnPlatform();
+    homeDir = result.homeDir;
+    osUserName = result.osUserName;
+
     configFile = path.join(homeDir, '.gitconfig');
     user = {};
 
-    if (require('fs').existsSync(configFile)) {
-        user = require('iniparser').parseSync(configFile).user;
+    if (fs.existsSync(configFile)) {
+        user = iniparser.parseSync(configFile).user;
     }
 
     return {
@@ -49,93 +99,76 @@ var defaults = (function () {
         authorName: user.name || '',
         authorEmail: user.email || ''
     };
-})();
+}
 
-gulp.task('default', function (done) {
+// Set up defaults for prompts
+var defaults = computeDefaults();
+
+gulp.task('default', function(done) {
     var prompts = [{
         name: 'appName',
         message: 'What is the name of your project?',
-        default: defaults.appName
+        'default': defaults.appName
     }, {
         name: 'appDescription',
         message: 'What is the description?'
     }, {
         name: 'appVersion',
         message: 'What is the version of your project?',
-        default: '0.1.0'
+        'default': '0.1.0'
     }, {
         name: 'authorName',
         message: 'What is the author name?',
-        default: defaults.authorName
+        'default': defaults.authorName
     }, {
         name: 'authorEmail',
         message: 'What is the author email?',
-        default: defaults.authorEmail
+        'default': defaults.authorEmail
     }, {
         name: 'userName',
         message: 'What is the github username?',
-        default: defaults.userName
+        'default': defaults.userName
     }, {
         name: 'operations',
         message: 'List your lambda operations as a comma-delimited string',
-        default: 'get,post'
-    }
-        , {
-            type: 'confirm',
-            name: 'moveon',
-            message: 'Continue?'
-        }];
+        'default': 'get,post'
+    }, {
+        type: 'confirm',
+        name: 'moveon',
+        message: 'Continue?'
+    }];
 
     //Ask
     inquirer.prompt(prompts,
-                    function (answers) {
-                        if (!answers.moveon) {
-                            return done();
-                        }
-                        answers.appNameSlug = _.slugify(answers.appName);
+        function(answers) {
+            if (!answers.moveon) {
+                return done();
+            }
+            answers.appNameSlug = _.slugify(answers.appName);
 
-                        var ops = answers.operations.split(',').map(function (op) {
-                            return op.trim()
-                        });
+            var ops = answers.operations.split(',').map(function(op) {
+                return op.trim();
+            });
 
-                        answers.operationsList = JSON.stringify(ops);
+            answers.operationsList = stringify(ops);
 
-                        var first = gulp.src(__dirname + '/templates/**/operation*.js',
-                            {base: __dirname + '/templates'})
-                            .pipe(multi(ops.length, createOperationProcessor(ops)));
+            var first = gulp.src(__dirname + '/templates/**/operation*.js',
+                    {base: __dirname + '/templates'})
+                    .pipe(multi(ops.length, createOperationProcessor(ops))),
 
-                        var second = gulp.src([__dirname + '/templates/**',
-                                               '!' + __dirname + '/templates/**/operation*.js']);
+                second = gulp.src([__dirname + '/templates/**',
+                    '!' + __dirname + '/templates/**/operation*.js']);
 
-                        return merge(first, second)
-                            .pipe(template(answers))
-                            .pipe(rename(function (file) {
-                                      fixHiddenFile(file);
-                                  }))
-                            .pipe(conflict('./'))
-                            .pipe(gulp.dest('./'))
-                            .pipe(install())
-                            .on('end', function () {
-                                    done();
-                                });
-                    });
+            return merge(first, second)
+                .pipe(template(answers))
+                .pipe(rename(function(file) {
+                    fixHiddenFile(file);
+                }))
+                .pipe(conflict('./'))
+                .pipe(gulp.dest('./'))
+                .pipe(install())
+                .on('end', function() {
+                    done();
+                });
+        });
 });
-
-
-function fixHiddenFile(file) {
-    if (file.basename[0] === '_') {
-        file.basename = '.' + file.basename.slice(1);
-    }
-}
-
-function createOperationProcessor(operations) {
-
-    return function process(i, file) {
-        var op = operations[i];
-        var dirname = path.dirname(file.path);
-        var filename = path.basename(file.path).replace('operation', op);
-        file.path = path.join(dirname, filename);
-        var compiled = lodash.template(file.contents.toString());
-        file.contents = new Buffer(compiled({'opName': op}));
-    }
-}
