@@ -1,6 +1,11 @@
 var through2 = require('through2');
 var gutil = require('gulp-util');
 
+/**
+ * For each incoming file, clone the file, run a processor on it and push it
+ * @param times
+ * @param processFn
+ */
 function multi(times, processFn){
     return through2.obj(function(file, enc, cb){
 

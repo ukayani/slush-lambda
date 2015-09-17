@@ -5,6 +5,12 @@
 
 ## Getting Started
 
+Install `slush` globally:
+
+```bash
+$ npm install -g slush
+```
+
 Install `slush-lambda` globally:
 
 ```bash
