@@ -20,11 +20,19 @@ var gulp = require('gulp'),
     fs = require('fs'),
     iniparser = require('iniparser');
 
+/**
+ * Lowercases and removes spaces on the input
+ * @param input input to format
+ */
 function format(input) {
     var output = input.toLowerCase();
     return output.replace(/\s/g, '');
 }
 
+/**
+ * Fixes the file if it begins with _ and preprends it with . instead
+ * @file the file to be analyzed
+ */
 function fixHiddenFile(file) {
     if (file.basename[0] === '_') {
         file.basename = '.' + file.basename.slice(1);
@@ -46,7 +54,11 @@ function createOperationProcessor(operations) {
     };
 }
 
-function determinePlatform() {
+/**
+ *  Determines home directories based on platform
+ *  This is used by the inquire plugin
+ */
+function determineDirectoriesBasedOnPlatform() {
     var homeDir, osUserName;
 
     if (process.platform === 'win32') {
@@ -63,11 +75,14 @@ function determinePlatform() {
     };
 }
 
+/**
+ *  Defaults for the inquire plugin when creating a new base project
+ */
 function computeDefaults() {
     var workingDirName = path.basename(process.cwd()),
         homeDir, osUserName, configFile, user;
 
-    var result = determinePlatform();
+    var result = determineDirectoriesBasedOnPlatform();
     homeDir = result.homeDir;
     osUserName = result.osUserName;
 
