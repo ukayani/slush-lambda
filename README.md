@@ -1,4 +1,4 @@
-# Slush Slush-lambda [![Build Status](https://secure.travis-ci.org/ukayani/slush-lambda.png?branch=master)](https://travis-ci.org/ukayani/slush-slush-lambda) [![NPM version](https://badge-me.herokuapp.com/api/npm/slush-slush-lambda.png)](http://badges.enytc.com/for/npm/slush-slush-lambda)
+# slush-lambda
 
 > Generates a aws-lambda node project
 
