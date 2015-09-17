@@ -89,4 +89,4 @@ gulp.task('package', function () {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('default', ['test', 'lint', 'style', 'complexity', 'package']);
+gulp.task('default', ['test', 'lint', 'style', 'complexity']);
