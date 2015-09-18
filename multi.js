@@ -6,33 +6,33 @@ var gutil = require('gulp-util');
  * @param times
  * @param processFn
  */
-function multi(times, processFn){
-    return through2.obj(function(file, enc, cb){
+function multi(times, processFn) {
+  return through2.obj(function (file, enc, cb) {
 
-        if (file.isNull()) {
-            this.push(file);
-            return cb();
-        }
+    if (file.isNull()) {
+      this.push(file);
+      return cb();
+    }
 
-        if (file.isStream()) {
-            this.emit('error', new gutil.PluginError('multi', 'Streaming not supported'));
-            return cb();
-        }
+    if (file.isStream()) {
+      this.emit('error', new gutil.PluginError('multi', 'Streaming not supported'));
+      return cb();
+    }
 
-        for(var i=0; i < times; i++){
+    for (var i = 0; i < times; i++) {
 
-            var clonedFile = file.clone();
-            try {
-                processFn(i, clonedFile);
-            } catch (err) {
-                this.emit('error', new gutil.PluginError('multi', err, {fileName: file.path}));
-            }
+      var clonedFile = file.clone();
+      try {
+        processFn(i, clonedFile);
+      } catch (err) {
+        this.emit('error', new gutil.PluginError('multi', err, {fileName: file.path}));
+      }
 
-            this.push(clonedFile);
-        }
+      this.push(clonedFile);
+    }
 
-        cb();
-    });
+    cb();
+  });
 }
 
 module.exports = multi;
