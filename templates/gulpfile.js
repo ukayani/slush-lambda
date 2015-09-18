@@ -19,7 +19,7 @@ function getIncludes() {
   var files = sourceFiles;
   var pkg = require('./package.json');
 
-  Object.keys(pkg.dependencies).forEach(function(mod) { files.push('node_modules/' + mod + "**/*.*"); });
+  Object.keys(pkg.dependencies).forEach(function(mod) { files.push('node_modules/' + mod + "/**/*.*"); });
 
   return files;
 }
