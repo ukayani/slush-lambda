@@ -42,10 +42,9 @@ gulp.task('test', function (done) {
 });
 
 gulp.task('style', function () {
-  var jscsConfig = require('./jscs.json');
 
   return gulp.src(sourceFiles)
-    .pipe(jscs(jscsConfig))
+    .pipe(jscs())
     .pipe(jscs.reporter('inline'))
     .pipe(jscs.reporter('gulp-jscs-html-reporter', {
       filename: __dirname + '/style.html',
