@@ -39,6 +39,12 @@ function fixHiddenFile(file) {
   }
 }
 
+/**
+ * Given a list of operations, produce a processor function that renames the files by replacing the operation
+ * placeholder and runs each file through template processing to fill in placeholders in file content
+ * @param operations
+ * @returns {Function}
+ */
 function createOperationProcessor(operations) {
   return function process(i, file) {
     var op = operations[i],

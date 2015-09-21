@@ -3,8 +3,10 @@ var gutil = require('gulp-util');
 
 /**
  * For each incoming file, clone the file, run a processor on it and push it
- * @param times
- * @param processFn
+ * @param times - number of times to clone incoming file
+ * @param processFn - (index, file) -> void - Responsible for processing each file.
+ * Note: processFn should rename incoming files based on their to avoid overwriting files when they are written to a
+ * dest
  */
 function multi(times, processFn) {
   return through2.obj(function (file, enc, cb) {
