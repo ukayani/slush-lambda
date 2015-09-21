@@ -14,79 +14,78 @@ var gutil = require('gulp-util');
 var sourceFiles = ['slushfile.js'];
 
 function getIncludes() {
-    var files = sourceFiles;
-    var pkg = require('./package.json');
+  var files = sourceFiles;
+  var pkg = require('./package.json');
 
-    Object.keys(pkg.dependencies).forEach(function (mod) {
-        files.push('node_modules/' + mod + "**/*.*");
-    });
+  Object.keys(pkg.dependencies).forEach(function (mod) {
+    files.push('node_modules/' + mod + "**/*.*");
+  });
 
-    return files;
+  return files;
 }
 
 gulp.task('test', function (done) {
 
-    gulp.src(['lib/**/*.js', 'operations/**/*.js'])
-        .pipe(istanbul()) // Covering files
-        .pipe(istanbul.hookRequire()) // Force `require` to return covered files
-        .on('finish', function () {
-            return gulp.src(['test/**/*.spec.js'])
-                .pipe(mocha())
-                .on('error', gutil.log)
-                .pipe(istanbul.writeReports()) // Creating the reports after tests ran
-                .pipe(istanbul.enforceThresholds({thresholds: {global: 100}})) // Enforce a coverage of at least 100%
-                .on('end', done);
+  gulp.src(['lib/**/*.js', 'operations/**/*.js'])
+    .pipe(istanbul()) // Covering files
+    .pipe(istanbul.hookRequire()) // Force `require` to return covered files
+    .on('finish', function () {
+      return gulp.src(['test/**/*.spec.js'])
+        .pipe(mocha())
+        .on('error', gutil.log)
+        .pipe(istanbul.writeReports()) // Creating the reports after tests ran
+        .pipe(istanbul.enforceThresholds({thresholds: {global: 100}})) // Enforce a coverage of at least 100%
+        .on('end', done);
 
-        })
-        .on('error', gutil.log);
+    })
+    .on('error', gutil.log);
 });
 
 gulp.task('style', function () {
-    var jscsConfig = require('./jscs.json');
 
-    return gulp.src(sourceFiles)
-        .pipe(jscs(jscsConfig))
-        .pipe(jscs.reporter('inline'))
-        .pipe(jscs.reporter('gulp-jscs-html-reporter', {
-            filename: __dirname + '/style.html',
-            createMissingFolders: false
-        }))
-        .pipe(jscs.reporter('fail'));
+  return gulp.src(sourceFiles)
+    .pipe(jscs())
+    .pipe(jscs.reporter('inline'))
+    .pipe(jscs.reporter('gulp-jscs-html-reporter', {
+      filename: __dirname + '/style.html',
+      createMissingFolders: false
+    }))
+    .pipe(jscs.reporter('fail'));
 });
 
 gulp.task('lint', function () {
-    var jshintConfig = require('./jshint.json');
-    return gulp.src(sourceFiles)
-        .pipe(jshint(jshintConfig))
-        .pipe(jshint.reporter('default'))
-        .pipe(jshint.reporter('gulp-jshint-html-reporter',
-            {
-                filename: __dirname + '/lint.html',
-                createMissingFolders: false
-            }))
-        .pipe(jshint.reporter('fail'));
+  var jshintConfig = require('./jshint.json');
+  return gulp.src(sourceFiles)
+    .pipe(jshint(jshintConfig))
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('gulp-jshint-html-reporter',
+      {
+        filename: __dirname + '/lint.html',
+        createMissingFolders: false
+      }))
+    .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('complexity', function () {
-    return gulp.src(sourceFiles)
-        .pipe(complexity(
-            {
-                cyclomatic: 10,
-                halstead: 15,
-                maintainability: 100,
-                breakOnErrors: true
-            }
-        ));
+  return gulp.src(sourceFiles)
+    .pipe(complexity(
+      {
+        cyclomatic: 10,
+        halstead: 15,
+        maintainability: 100,
+        breakOnErrors: true
+      }
+    ));
 });
 
 gulp.task('nsp', function (done) {
-    nsp('./package.json', done);
+  nsp('./package.json', done);
 });
 
 gulp.task('package', function () {
-    return gulp.src(getIncludes(), {base: './'})
-        .pipe(zip('service.zip'))
-        .pipe(gulp.dest('.'));
+  return gulp.src(getIncludes(), {base: './'})
+    .pipe(zip('service.zip'))
+    .pipe(gulp.dest('.'));
 });
 
 gulp.task('default', ['test', 'lint', 'style', 'complexity']);

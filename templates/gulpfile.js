@@ -13,24 +13,25 @@ var gutil = require('gulp-util');
 var stylish = require('jshint-stylish');
 
 var sourceFiles = ['app.js', 'operations/**/*.js', 'lib/**/*.js'];
-
+var testSourceFiles = ['test/**/**.spec.js'];
+var allFiles = sourceFiles.concat(testSourceFiles);
 
 function getIncludes() {
   var files = sourceFiles;
   var pkg = require('./package.json');
-
-  Object.keys(pkg.dependencies).forEach(function(mod) { files.push('node_modules/' + mod + "**/*.*"); });
+  files.push('config.json');
+  Object.keys(pkg.dependencies).forEach(function(mod) { files.push('node_modules/' + mod + "/**/*.*"); });
 
   return files;
 }
 
 gulp.task('test', function(done){
 
-    gulp.src(['lib/**/*.js', 'operations/**/*.js'])
+    gulp.src(sourceFiles)
         .pipe(istanbul()) // Covering files
         .pipe(istanbul.hookRequire()) // Force `require` to return covered files
         .on('finish', function () {
-                return gulp.src(['test/**/*.spec.js'])
+                return gulp.src(testSourceFiles)
                     .pipe(mocha())
                     .on('error', gutil.log)
                     .pipe(istanbul.writeReports()) // Creating the reports after tests ran
@@ -44,25 +45,24 @@ gulp.task('test', function(done){
 gulp.task('style', function() {
   var jscsConfig = require('./jscs.json');
 
-  return gulp.src(sourceFiles)
+  return gulp.src(allFiles)
       .pipe(jscs(jscsConfig))
       .pipe(jscs.reporter('inline'))
       .pipe(jscs.reporter('gulp-jscs-html-reporter', {
         filename: __dirname + '/style.html',
-        createMissingFolders : false  
+        createMissingFolders : false
       }))
       .pipe(jscs.reporter('fail'));
 });
 
 gulp.task('lint', function() {
-  var jshintConfig = require('./jshint.json');
 
-  return gulp.src(sourceFiles)
-      .pipe(jshint(jshintConfig))
+  return gulp.src(allFiles)
+      .pipe(jshint())
       .pipe(jshint.reporter(stylish))
       .pipe(jshint.reporter('gulp-jshint-html-reporter', {
         filename: __dirname + '/lint.html',
-        createMissingFolders : false  
+        createMissingFolders : false
       }))
       .pipe(jshint.reporter('fail'));
 });
@@ -72,7 +72,7 @@ gulp.task('complexity', function(){
         .pipe(complexity())
 });
 
-gulp.task('nsp', function (done) {
+gulp.task('security', function (done) {
   nsp('./package.json', done);
 });
 
@@ -83,4 +83,4 @@ gulp.task('package', function() {
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('default', ['test', 'lint', 'style', 'complexity', 'package']);
+gulp.task('default', ['test', 'lint', 'style', 'complexity']);
