@@ -10,19 +10,8 @@ var nsp = require('gulp-nsp');
 var zip = require('gulp-zip');
 var gutil = require('gulp-util');
 
-//test myself
 var sourceFiles = ['slushfile.js'];
 
-function getIncludes() {
-  var files = sourceFiles;
-  var pkg = require('./package.json');
-
-  Object.keys(pkg.dependencies).forEach(function (mod) {
-    files.push('node_modules/' + mod + "**/*.*");
-  });
-
-  return files;
-}
 
 gulp.task('test', function (done) {
 
@@ -54,9 +43,8 @@ gulp.task('style', function () {
 });
 
 gulp.task('lint', function () {
-  var jshintConfig = require('./jshint.json');
   return gulp.src(sourceFiles)
-    .pipe(jshint(jshintConfig))
+    .pipe(jshint())
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('gulp-jshint-html-reporter',
       {
@@ -82,10 +70,5 @@ gulp.task('nsp', function (done) {
   nsp('./package.json', done);
 });
 
-gulp.task('package', function () {
-  return gulp.src(getIncludes(), {base: './'})
-    .pipe(zip('service.zip'))
-    .pipe(gulp.dest('.'));
-});
 
 gulp.task('default', ['test', 'lint', 'style', 'complexity']);
