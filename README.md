@@ -59,7 +59,13 @@ When doing a git push, specify the tag-name to push the tag information to the r
 
 Ex.
 ```bash
-$ git push origin/branchname tagname
+$ git push origin branchname tagname
+```
+
+Or
+
+```bash
+$ git push --follow-tags
 ```
 
 
